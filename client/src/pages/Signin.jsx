@@ -1,19 +1,20 @@
 import React, { useState } from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
-
+import { signInStart, signInFailure, signInSuccess } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default function Signin() {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({})
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const {loading, error} = useSelector((state) => state.user)
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id] : e.target.value})
   }
 
   const handleSubmit = async (e) => {
-    setLoading(true)
+    dispatch(signInStart())
     e.preventDefault()
     const {password, email} = formData
     console.log(formData)
@@ -23,14 +24,12 @@ export default function Signin() {
     })
     .then((res) => {
       console.log(res)
-      setLoading(false)
-      setError(false)
+      dispatch(signInSuccess(res))
       navigate('/')
     })
     .catch((err) => {
       console.log(err)
-      setLoading(false)
-      setError(true)
+      dispatch(signInFailure(err))
     })
   }
   
@@ -47,7 +46,7 @@ export default function Signin() {
       <input type='text' placeholder='Password' id='password' 
       className='bg-slate-100 p-3' onChange={handleChange}/>
 
-      <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>{loading ? 'Loading..' : 'Sign Up'}</button>
+      <button disabled={loading} className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80'>{loading ? 'Loading..' : 'Sign In'}</button>
     
     <div className='flex gap-2 mt-5'>
       <p>Dont have an account?</p>
