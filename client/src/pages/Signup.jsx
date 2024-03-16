@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 
 
 export default function Signup() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -25,6 +26,7 @@ export default function Signup() {
       console.log(res)
       setLoading(false)
       setError(false)
+      navigate('/')
     })
     .catch((err) => {
       console.log(err)
